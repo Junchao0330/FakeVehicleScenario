@@ -48,6 +48,7 @@ void Eavesdropper::initialize(int stage) {
 	}
 }
 void Eavesdropper::handleLowerMsg(cMessage* msg) {
+//eavesdropper start time
     if(simTime() > 200){
     WAVEBeacon* bsm = dynamic_cast<WAVEBeacon*>(msg);
     if (bsm != 0) {
