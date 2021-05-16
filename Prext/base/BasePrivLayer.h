@@ -22,8 +22,12 @@
 #include <assert.h>
 #include <veins/modules/Prext/base/messages/WAVEBeacon_m.h>
 #include <veins/modules/Prext/base/messages/MixZoneAd_m.h>
+#include <veins/modules/Prext/base/messages/VehicleReply_m.h>
 #include <map>
+#include <fstream>
 #include <veins/modules/mobility/traci/TraCIMobility.h>
+#include "veins/base/connectionManager/ChannelAccess.h"
+#include <veins/modules/mac/ieee80211p/WaveAppToMac1609_4Interface.h>
 using namespace std;
 using Veins::TraCIMobility;
 
@@ -44,6 +48,7 @@ protected:
      unsigned int psynmCnt;
      int myId;
 
+
      virtual void changePsynm();
 
      virtual void handleSelfMsg(cMessage* msg) {};
@@ -60,6 +65,7 @@ protected:
     void handleMixZoneAd(MixZoneAd* ad);
 
     struct mixZoneInfo {
+      int zoneID;
       int zoneType;
       Coord circularPos;
       int circularRange;

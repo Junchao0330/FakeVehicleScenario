@@ -48,7 +48,7 @@ void BasePrivLayer::finish() {
 }
 
 void BasePrivLayer::changePsynm() {
-     ++psynmCnt;
+     psynmCnt++;
      emit(sPtimes, (simTime() - psynmStartTime).dbl());
      psynmStartTime = simTime();
 }
@@ -56,8 +56,8 @@ void BasePrivLayer::changePsynm() {
 void BasePrivLayer::handleUpperMsg(cMessage *msg) {
     WAVEBeacon *bsm = dynamic_cast<WAVEBeacon*>(msg);
     if (bsm) {
-        if (isInMixZone())  // encrypt messages if car is currently in a mix-zone
-            bsm->setIsEncrypted(true);
+       if (isInMixZone())  // encrypt messages if car is currently in a mix-zone
+//            bsm->setIsEncrypted(true);
         bsm->setSenderPsynm(getCurrentPsynm());
         sendDown(bsm);
     }
@@ -69,7 +69,7 @@ void BasePrivLayer::handleUpperControl(cMessage *msg) {
     WAVEBeacon *bsm = dynamic_cast<WAVEBeacon*>(msg);
     if (bsm) {
         if (isInMixZone()) // encrypt messages if car is currently in a mix-zone
-            bsm->setIsEncrypted(true);
+//            bsm->setIsEncrypted(true);
         bsm->setSenderPsynm(getCurrentPsynm());
         sendControlDown(bsm);
     }
@@ -80,6 +80,7 @@ void BasePrivLayer::handleUpperControl(cMessage *msg) {
 bool BasePrivLayer::isInMixZone(){
     map<int,mixZoneInfo>::iterator it = mixZones.begin();
     bool bChngPsynm = false;
+    int enZoneID = 0;
 
     while (it != mixZones.end()) {
         if (it->second.zoneType == 1) { // circular
@@ -94,7 +95,7 @@ bool BasePrivLayer::isInMixZone(){
                 // mark pseudonym to be changed, if I am not in another mix-zone
                 if (mxzStartTime != 0)
                     bChngPsynm = true;
-
+                    enZoneID = it->second.zoneID;
                 // in any case, if I am far from the effective range, then delete this record
                 it = mixZones.erase(it);
             }
@@ -110,6 +111,25 @@ bool BasePrivLayer::isInMixZone(){
         emit(sMxZtimes, (simTime()-mxzStartTime).dbl());
         mxzStartTime = 0;
         changePsynm();
+
+        //after changing pseudonym, reply to FBG their position
+        VehicleReply* vrply = new VehicleReply("VehicleReply");
+
+        vrply->setKind(PrivLayerMessageKinds::VEHICLE_REPLY);
+        vrply->setSenderAddress(myId);
+        vrply->setRecipientAddress(0);
+        vrply->setTimestamp(simTime());
+        vrply->setEnteredMixZone(enZoneID);
+        vrply->setSenderPsynm(getCurrentPsynm());
+        vrply->setSenderPos(traci->getCurrentPosition());
+        vrply->setSenderAngle(traci->getAngleRad());
+        vrply->setSenderVel(traci->getCurrentSpeed());
+        vrply->setEdge(traci->getRoadId());
+        vrply->setSerial(-1);
+        vrply->setWsmData("");
+        sendDown(vrply);
+
+
     }
 
     return false;
@@ -117,6 +137,7 @@ bool BasePrivLayer::isInMixZone(){
 void BasePrivLayer::handleMixZoneAd(MixZoneAd* ad) {
     mixZoneInfo mzi;
     mzi.zoneType = ad->getZoneType();
+    mzi.zoneID = ad->getSenderAddress();
     if (ad->getZoneType() == 1) {   //circular zone
         privEV << "Circular mix zone ad of range (" << ad->getCircularRange() << ")received. Distance: " << ad->getSenderPos().distance(traci->getCurrentPosition()) << endl;
         if (ad->getSenderPos().distance(traci->getCurrentPosition()) <= ad->getCircularRange()) {  // and I'm in this zone range already, then add it to the encountered zones
@@ -152,3 +173,4 @@ void BasePrivLayer::handleLowerControl(cMessage* msg) {
     }
      sendControlUp(msg);
  }
+

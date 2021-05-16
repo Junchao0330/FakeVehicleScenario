@@ -48,8 +48,6 @@ void Eavesdropper::initialize(int stage) {
 	}
 }
 void Eavesdropper::handleLowerMsg(cMessage* msg) {
-//eavesdropper start time
-    if(simTime() > 200){
     WAVEBeacon* bsm = dynamic_cast<WAVEBeacon*>(msg);
     if (bsm != 0) {
         // report it directly to the tracker
@@ -67,7 +65,6 @@ void Eavesdropper::handleLowerMsg(cMessage* msg) {
             }
     }
     delete msg ;
-}
 }
 void Eavesdropper::finish() {
     if (localDump) outfile.close();

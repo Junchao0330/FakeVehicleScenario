@@ -293,3 +293,4 @@ bcnSample VehicleTracker::msg2BcnSample(WAVEBeacon * bsm) {
 
     return bcn;
 }
+

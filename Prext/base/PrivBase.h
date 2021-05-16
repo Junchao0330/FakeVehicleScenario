@@ -27,7 +27,8 @@ enum PrivateApplMessageKinds {
             SERVICE_PROVIDER = BaseApplLayer::BaseApplMessageKinds::LAST_BASE_APPL_MESSAGE_KIND,
             SEND_BEACON_EVT,
             WAVE_BEACON,
-            WAVE_DATA
+            WAVE_DATA,
+            FAKE_BEACON_EVT
         };
 
 enum PrivLayerMessageKinds {
@@ -36,8 +37,10 @@ enum PrivLayerMessageKinds {
             RSU_ADV_EVT,
             MIX_ZONE_AD,
             TRACK_BSM_EVT,
+            VEHICLE_REPLY,
             OTHER
 
 };
+
 
 #endif        

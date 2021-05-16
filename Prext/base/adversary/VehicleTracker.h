@@ -31,6 +31,7 @@ using namespace std;
 class VehicleTracker : public cSimpleModule
 {
 
+
   protected:
     void removeEncryptedBeacons();
     bcnSample msg2BcnSample(WAVEBeacon * bsm);

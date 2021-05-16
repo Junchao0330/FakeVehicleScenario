@@ -21,6 +21,38 @@ public:
    unsigned int vehId;
    bool bEncrypted;
 };
+
+class bcnNoEn {
+public:
+   bcnNoEn() { vehId = psynm = 0; timestampe = 0; }
+
+   double timestampe, px, vx, py, vy, angle;
+   uint64_t psynm;
+   int vehId;
+};
+
+class vreply {
+public:
+   vreply() { vID = mID = 0; timestamp = 0; }
+
+   double timestamp, px, py, vx, vy, angle;
+   uint64_t psynm;
+   int vID, mID;
+};
+
+class FakeInfo {
+public:
+    FakeInfo(){
+
+    }
+            double timestamp;
+            double positionx;
+            double positiony;
+            double angle;
+            double speed;
+            std::string roadID;
+        };
+
 class kalmanTrack {
 
     static int p0;

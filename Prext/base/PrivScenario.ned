@@ -26,7 +26,8 @@ network PrivScenario extends Scenario
 {
     parameters:
         int nEavesdropper;
-        int nMXRSU; 
+        int nMXRSU;
+        int nGeneralR;
         @display("bgl=2;");
     submodules:
         tracker: VehicleTracker {
@@ -37,5 +38,11 @@ network PrivScenario extends Scenario
         }
         MxZ[nMXRSU]: RSU {
             @display("p=233,163;r=300,lavender,,1;i=block/routing;is=s");
+        }
+        GeneralRsu[nGeneralR]: RSU {
+            @display("p=369,226;b=83,37,oval;r=300");
+        }
+        Fbg: FakeBeaconGenerator {
+            @display("p=455,333;b=80,27");
         }
 }
